@@ -144,15 +144,28 @@ export class Game {
     this.world = buildWorld(this.scene);
     this.pos.copy(this.world.playerStart);
     this.ePos.copy(this.world.entitySpawn);
-    this.ambient = new THREE.AmbientLight(0x223044, 0.35);
+    this.ambient = new THREE.AmbientLight(0x2a3a50, 0.5);
     this.scene.add(this.ambient);
     // a few dim emergency lights
-    const emg1 = new THREE.PointLight(0x3355aa, 6, 30, 2);
+    const emg1 = new THREE.PointLight(0x4466bb, 12, 40, 2);
     emg1.position.set(0, 4.4, 8);
     this.scene.add(emg1);
-    const emg2 = new THREE.PointLight(0x223355, 4, 24, 2);
-    emg2.position.set(0, 4.4, 40);
+    const emg2 = new THREE.PointLight(0xbfc2cf, 22, 34, 2);
+    emg2.position.set(0, 4.4, 38);
     this.scene.add(emg2);
+    // aisle + branch room lights
+    const extra: [number, number, number, number][] = [
+      [0, 20, 0x4466bb, 10],
+      [-34, 10, 0x6688aa, 10],
+      [36, 10, 0x4466aa, 10],
+      [16, -24, 0x5577aa, 10],
+      [-18, -24, 0x5577aa, 10],
+    ];
+    for (const [x, z, c, i] of extra) {
+      const l = new THREE.PointLight(c, i, 28, 2);
+      l.position.set(x, 4.4, z);
+      this.scene.add(l);
+    }
   }
 
   setupPlayerLights() {
