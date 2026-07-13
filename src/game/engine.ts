@@ -105,6 +105,7 @@ export class Game {
   toastTimer = 0;
   running = false;
   lastT = 0;
+  paused = false;
   vignette = 0;
   flicker = 0;
   raf = 0;
