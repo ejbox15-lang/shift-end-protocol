@@ -88,11 +88,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Survive the night shift. A retro PSX-style first-person psychological horror game.",
+          "The Last Shift: a PSX-style first-person psychological horror game. Survive the night shift at a haunted food distribution warehouse.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "The Last Shift — PSX Horror" },
+      { name: "twitter:description", content: "The Last Shift: a PSX-style first-person psychological horror game. Survive the night shift at a haunted food distribution warehouse." },
     ],
     links: [
       {
