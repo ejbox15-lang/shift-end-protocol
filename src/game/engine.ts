@@ -837,6 +837,7 @@ export class Game {
   }
 
   respawn() {
+    this.paused = false;
     // reset to before last chapter — simple: reset position, entity search
     this.status = "playing";
     this.hiding = false;
@@ -849,6 +850,19 @@ export class Game {
       this.entity.visible = false;
     }
     this.renderer.domElement.requestPointerLock?.();
+    this.emit();
+  }
+
+  pause() {
+    if (this.status !== "playing") return;
+    this.paused = true;
+    document.exitPointerLock?.();
+    this.emit();
+  }
+  resume() {
+    if (this.status !== "playing") return;
+    this.paused = false;
+    if (!this.reading) this.renderer.domElement.requestPointerLock?.();
     this.emit();
   }
 
