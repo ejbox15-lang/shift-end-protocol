@@ -142,3 +142,55 @@
     color: var(--color-foreground);
   }
 }
+
+/* ===== The Last Shift — horror HUD theme ===== */
+.font-terminal {
+  font-family: "VT323", monospace;
+}
+.font-typewriter {
+  font-family: "Special Elite", serif;
+}
+.text-hazard {
+  color: oklch(0.72 0.19 55);
+}
+.text-blood {
+  color: oklch(0.55 0.22 27);
+}
+.text-crt {
+  color: oklch(0.82 0.13 155);
+}
+.crt-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.28) 3px,
+    rgba(0, 0, 0, 0.28) 4px
+  );
+  z-index: 50;
+}
+.vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  z-index: 40;
+}
+@keyframes flicker-in {
+  0% { opacity: 0; }
+  10% { opacity: 0.6; }
+  20% { opacity: 0.2; }
+  40% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+.animate-flicker-in {
+  animation: flicker-in 0.5s steps(6) both;
+}
