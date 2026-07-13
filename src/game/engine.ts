@@ -607,7 +607,7 @@ export class Game {
     this.lastT = now;
     if (dt > 0.05) dt = 0.05;
 
-    if (this.status === "playing" && !this.reading) {
+    if (this.status === "playing" && !this.reading && !this.paused) {
       this.updatePlayer(dt);
       if (this.entityActive) this.updateEntity(dt);
       this.updateFlashlight(dt);
