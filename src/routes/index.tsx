@@ -71,7 +71,7 @@ function GamePage() {
       {hud && hud.status === "playing" && (
         <div
           className="vignette-overlay transition-opacity duration-300"
-          style={{ opacity: 0.55 + (hud.vignette || 0) * 0.4 }}
+          style={{ opacity: 0.35 + (hud.vignette || 0) * 0.5 }}
         />
       )}
 
