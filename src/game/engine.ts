@@ -626,6 +626,7 @@ export class Game {
       this.updateFlashlight(dt);
       this.updateTimers(dt);
     }
+    if (this.status === "playing" && !this.paused) this.updateAudio(dt);
     this.updateCamera(dt);
     this.renderer.render(this.scene, this.camera);
   };
