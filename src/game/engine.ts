@@ -845,6 +845,22 @@ export class Game {
         this.beep(70, 0.4, 0.18);
       }
     }
+    if (this.scriptedSightings.length) {
+      for (const s of this.scriptedSightings) s.t -= dt;
+      while (this.scriptedSightings.length && this.scriptedSightings[0].t <= 0) {
+        const s = this.scriptedSightings.shift()!;
+        const wp = this.world.entityWaypoints[s.wp] ?? this.world.entityWaypoints[0];
+        this.entity.visible = true;
+        this.entityActive = true;
+        this.ePos.copy(wp);
+        this.entity.position.copy(this.ePos);
+        if (this.eState === "DORMANT") this.eState = "PATROL";
+        this.flicker = 1.2;
+        this.beep(60 + Math.random() * 30, 0.5, 0.18);
+        this.whisper(0.28);
+        if (s.msg) this.showToast(s.msg);
+      }
+    }
   }
 
   updatePlayer(dt: number) {
