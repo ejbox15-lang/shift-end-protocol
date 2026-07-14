@@ -22,6 +22,8 @@ export interface HudState {
   hiding: boolean;
   showInv: boolean;
   vignette: number; // 0..1 danger
+  showGuide: boolean;
+  entityDistance: number;
 }
 
 interface Objective {
@@ -112,7 +114,17 @@ export class Game {
   scriptedScareTimer = 0;
 
   audioCtx: AudioContext | null = null;
-  drone: OscillatorNode | null = null;
+  masterGain: GainNode | null = null;
+  reverbNode: ConvolverNode | null = null;
+  ambientGain: GainNode | null = null;
+  droneGain: GainNode | null = null;
+  proxGain: GainNode | null = null;
+  heartGain: GainNode | null = null;
+  heartTimer = 0;
+  whisperTimer = 4;
+  clunkTimer = 6;
+  showGuide = true;
+  scriptedSightings: { t: number; wp: number; msg?: string }[] = [];
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -295,6 +307,8 @@ export class Game {
     if (this.status !== "playing") return;
     if (k === "e") this.interact();
     if (k === "f") this.toggleFlash();
+    if (e.code === "KeyF" && k !== "f") this.toggleFlash();
+    if (k === "h") { this.showGuide = !this.showGuide; this.emit(); }
     if (k === "tab") { e.preventDefault(); this.showInv = !this.showInv; this.emit(); }
     if (k === "escape") { /* pause handled by react */ }
   };
