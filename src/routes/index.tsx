@@ -15,6 +15,7 @@ const CONTROLS: [string, string][] = [
   ["LMB", "Fire handgun"],
   ["TAB", "Inventory"],
   ["ESC", "Pause"],
+  ["H", "Toggle controls guide"],
 ];
 
 const ITEM_LABEL: Record<string, string> = {
