@@ -289,6 +289,19 @@ export function buildWorld(scene: THREE.Scene): WorldBuild {
   makeNote(scene, interactables, "note_freezer", -30, 16, "COLD STORAGE LOG", "The old employee — badge #013 — was last seen entering cold storage. He never clocked out. The company said he 'transferred.'");
   makePickup(scene, interactables, "batt_freezer", "battery", -38, 6, 0x33ff88, "Pick up batteries");
 
+  // ---- Cold storage inner (past freezer, north branch) ----
+  buildRoom(scene, colliders, -44, -26, 20, 40, [
+    { side: "s", center: -35, width: 3 },
+  ], matFreezer, matFreezer);
+  // meat racks / hanging shapes
+  for (let i = 0; i < 4; i++) {
+    addBox(scene, colliders, -40 + i * 4, 30, 0.6, 4, 0.4, 2.5, matWall2);
+  }
+  makeLocker(scene, colliders, hideSpots, interactables, -30, 38, 0);
+  makeLocker(scene, colliders, hideSpots, interactables, -28, 38, 0);
+  makeNote(scene, interactables, "note_cold", -35, 36, "SCRAWLED ON THE WALL", "HE'S STILL WORKING\nHE NEVER CLOCKED OUT\nDON'T TURN AROUND");
+  makePickup(scene, interactables, "batt_cold", "battery", -40, 36, 0x33ff88, "Pick up batteries");
+
   // ============ LOADING DOCK ============
   addBox(scene, colliders, 40, 4, 6, 10, 3.5, 0, matMetal); // truck trailer
   const dockNote = makeNote;
@@ -330,6 +343,10 @@ export function buildWorld(scene: THREE.Scene): WorldBuild {
     new THREE.Vector3(-18, 0, 18),
     new THREE.Vector3(18, 0, 18),
     new THREE.Vector3(0, 0, -8),
+    new THREE.Vector3(-35, 0, 30),
+    new THREE.Vector3(-35, 0, 10),
+    new THREE.Vector3(38, 0, 10),
+    new THREE.Vector3(0, 0, 34),
   ];
 
   return {
