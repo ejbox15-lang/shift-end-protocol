@@ -202,6 +202,29 @@ function PlayHud({ hud }: { hud: HudState }) {
           <div className="text-foreground/40 text-xs mt-2">TAB to close</div>
         </div>
       )}
+
+      {/* Controls guide — top right */}
+      {hud.showGuide && !hud.showInv && (
+        <div className="absolute right-4 top-4 z-30 w-52 border border-border/60 bg-black/70 p-3 font-terminal text-sm backdrop-blur-sm">
+          <div className="text-hazard tracking-widest uppercase mb-2 flex justify-between">
+            <span>Controls</span>
+            <span className="text-foreground/40 text-xs">[H] hide</span>
+          </div>
+          <div className="space-y-0.5">
+            {CONTROLS.map(([k, d]) => (
+              <div key={k} className="flex justify-between text-foreground/80">
+                <span className="text-crt">{k}</span>
+                <span className="text-foreground/70">{d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {!hud.showGuide && !hud.showInv && (
+        <div className="absolute right-4 top-4 z-30 font-terminal text-xs text-foreground/40">
+          [H] Controls
+        </div>
+      )}
     </>
   );
 }
