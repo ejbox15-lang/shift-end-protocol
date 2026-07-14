@@ -536,8 +536,14 @@ export class Game {
   }
 
   toggleFlash() {
-    if (!this.hasFlashlight) return;
-    if (this.battery <= 0) return;
+    if (!this.hasFlashlight) {
+      this.showToast("You don't have a flashlight yet. Take the equipment in the break room.");
+      return;
+    }
+    if (this.battery <= 0) {
+      this.showToast("Flashlight dead. Find batteries.");
+      return;
+    }
     this.flashOn = !this.flashOn;
     this.beep(this.flashOn ? 600 : 300, 0.04, 0.08);
     this.emit();
@@ -688,12 +694,15 @@ export class Game {
     if (task === "labels") {
       this.flags.add("labels");
       this.openMessage("LABEL PRINTER", "Printing... A label prints with a name you don't recognize: EMPLOYEE #013 — STATUS: ON SHIFT. But nobody named that works here.");
+      this.scriptSighting(5, 6, "Something moved in aisle 3.");
     } else if (task === "temp") {
       this.flags.add("temp");
       this.openMessage("FREEZER MONITOR", "Temp: -18C. Normal.\n\nWait — a second reading blinks: 37C, HUMAN. Motion detected in cold storage. Then it's gone.");
+      this.scriptSighting(3, 7, "A shape stood in cold storage.");
     } else if (task === "cameras") {
       this.flags.add("cameras");
       this.openMessage("SECURITY CAMERAS", "You flip through the feeds. Aisle 3 — empty. Freezer — empty. Break room...\n\nA figure in an old uniform stands facing the camera. It does not move. The timestamp reads 11:00 PM, three years ago.");
+      this.scriptSighting(2, 6, "Camera feed cut to static.");
     } else if (task === "records") {
       this.flags.add("records");
       this.openMessage("EMPLOYEE RECORDS", "Badge #013 — [REDACTED]. Cause of separation: INCIDENT. Filed under 'transferred.' The night shift he died on was covered up.\n\nThe last log entry, added tonight: a new hire. YOUR name.");
