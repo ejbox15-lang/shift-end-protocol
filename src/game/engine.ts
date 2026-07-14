@@ -1088,6 +1088,8 @@ export class Game {
       hiding: this.hiding,
       showInv: this.showInv,
       vignette: this.vignette,
+      showGuide: this.showGuide,
+      entityDistance: this.entityActive && this.entity.visible ? this.ePos.distanceTo(this.pos) : -1,
     };
   }
   emit() { this.onHud(this.hudSnapshot()); }
@@ -1112,7 +1114,7 @@ export class Game {
     window.removeEventListener("keydown", this.onKeyDown);
     window.removeEventListener("keyup", this.onKeyUp);
     document.removeEventListener("mousemove", this.onMouseMove);
-    try { this.drone?.stop(); this.audioCtx?.close(); } catch { /* ignore */ }
+    try { this.audioCtx?.close(); } catch { /* ignore */ }
     this.renderer.dispose();
     this.renderer.domElement.remove();
   }
