@@ -297,7 +297,7 @@ export class Game {
     if (document.pointerLockElement !== this.renderer.domElement || this.reading || this.hiding) return;
     const s = 0.0022;
     this.yaw -= e.movementX * s;
-    this.pitch -= e.movementY * s;
+this.pitch += e.movementY * s;
     this.pitch = Math.max(-1.3, Math.min(1.3, this.pitch));
   };
 
