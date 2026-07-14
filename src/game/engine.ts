@@ -329,15 +329,91 @@ export class Game {
 
   initAudio() {
     try {
-      this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-      osc.type = "sine";
-      osc.frequency.value = 44;
-      gain.gain.value = 0.04;
-      osc.connect(gain).connect(this.audioCtx.destination);
-      osc.start();
-      this.drone = osc;
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioCtx = ctx;
+      const master = ctx.createGain();
+      master.gain.value = 0.9;
+      master.connect(ctx.destination);
+      this.masterGain = master;
+
+      // Warehouse convolution reverb (procedural impulse)
+      const conv = ctx.createConvolver();
+      const rate = ctx.sampleRate;
+      const len = Math.floor(rate * 2.6);
+      const impulse = ctx.createBuffer(2, len, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = impulse.getChannelData(ch);
+        for (let i = 0; i < len; i++) {
+          const t = i / len;
+          d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2.4) * 0.7;
+        }
+      }
+      conv.buffer = impulse;
+      const wet = ctx.createGain();
+      wet.gain.value = 0.55;
+      conv.connect(wet).connect(master);
+      this.reverbNode = conv;
+
+      // Filtered noise HVAC ambience
+      const noiseBuf = ctx.createBuffer(1, rate * 2, rate);
+      const nd = noiseBuf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < nd.length; i++) {
+        const w = Math.random() * 2 - 1;
+        last = (last + 0.02 * w) / 1.02;
+        nd[i] = last * 6;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuf;
+      noise.loop = true;
+      const nFilt = ctx.createBiquadFilter();
+      nFilt.type = "lowpass";
+      nFilt.frequency.value = 320;
+      const ambient = ctx.createGain();
+      ambient.gain.value = 0.09;
+      noise.connect(nFilt).connect(ambient);
+      ambient.connect(master);
+      ambient.connect(conv);
+      noise.start();
+      this.ambientGain = ambient;
+
+      // Fluorescent-ballast drone
+      const drone = ctx.createOscillator();
+      drone.type = "sawtooth";
+      drone.frequency.value = 58;
+      const dFilt = ctx.createBiquadFilter();
+      dFilt.type = "lowpass";
+      dFilt.frequency.value = 180;
+      const droneG = ctx.createGain();
+      droneG.gain.value = 0.03;
+      drone.connect(dFilt).connect(droneG).connect(master);
+      droneG.connect(conv);
+      drone.start();
+      this.droneGain = droneG;
+
+      // Proximity dread pad
+      const p1 = ctx.createOscillator();
+      const p2 = ctx.createOscillator();
+      p1.type = "sine"; p1.frequency.value = 41;
+      p2.type = "sine"; p2.frequency.value = 43.3;
+      const proxG = ctx.createGain();
+      proxG.gain.value = 0;
+      p1.connect(proxG);
+      p2.connect(proxG);
+      proxG.connect(master);
+      proxG.connect(conv);
+      p1.start(); p2.start();
+      this.proxGain = proxG;
+
+      // Heartbeat kick
+      const h = ctx.createOscillator();
+      h.type = "sine";
+      h.frequency.value = 55;
+      const heartG = ctx.createGain();
+      heartG.gain.value = 0;
+      h.connect(heartG).connect(master);
+      h.start();
+      this.heartGain = heartG;
     } catch { /* ignore */ }
   }
 
@@ -349,11 +425,108 @@ export class Game {
       o.frequency.value = freq;
       o.type = "square";
       g.gain.value = vol;
-      o.connect(g).connect(this.audioCtx.destination);
+      o.connect(g);
+      g.connect(this.masterGain ?? this.audioCtx.destination);
+      if (this.reverbNode) g.connect(this.reverbNode);
       o.start();
       g.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + dur);
       o.stop(this.audioCtx.currentTime + dur);
     } catch { /* ignore */ }
+  }
+
+  whisper(vol = 0.2) {
+    const ctx = this.audioCtx;
+    if (!ctx) return;
+    try {
+      const dur = 1.4 + Math.random() * 1.0;
+      const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = 900 + Math.random() * 700;
+      bp.Q.value = 6;
+      const g = ctx.createGain();
+      const t = ctx.currentTime;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.25);
+      g.gain.linearRampToValueAtTime(0, t + dur);
+      src.connect(bp).connect(g);
+      if (this.reverbNode) g.connect(this.reverbNode);
+      g.connect(this.masterGain ?? ctx.destination);
+      src.start();
+      src.stop(t + dur + 0.05);
+    } catch { /* ignore */ }
+  }
+
+  clunk() {
+    const ctx = this.audioCtx;
+    if (!ctx) return;
+    try {
+      const o = ctx.createOscillator();
+      o.type = "triangle";
+      o.frequency.value = 90 + Math.random() * 120;
+      const g = ctx.createGain();
+      const t = ctx.currentTime;
+      g.gain.setValueAtTime(0.22, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      o.connect(g);
+      if (this.reverbNode) g.connect(this.reverbNode);
+      g.connect(this.masterGain ?? ctx.destination);
+      o.start();
+      o.stop(t + 0.65);
+    } catch { /* ignore */ }
+  }
+
+  triggerHeartbeat() {
+    const ctx = this.audioCtx;
+    if (!ctx || !this.heartGain) return;
+    const t = ctx.currentTime;
+    const g = this.heartGain.gain;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(0, t);
+    g.linearRampToValueAtTime(0.35, t + 0.02);
+    g.exponentialRampToValueAtTime(0.001, t + 0.35);
+  }
+
+  updateAudio(dt: number) {
+    if (!this.audioCtx) return;
+    let dist = 999;
+    if (this.entityActive && this.entity.visible) dist = this.ePos.distanceTo(this.pos);
+    const nearness = Math.max(0, Math.min(1, 1 - dist / 26));
+    if (this.proxGain) {
+      const target = nearness * 0.28 + (this.eState === "CHASE" ? 0.08 : 0);
+      const cur = this.proxGain.gain.value;
+      this.proxGain.gain.value = cur + (target - cur) * Math.min(1, dt * 3);
+    }
+    if (this.ambientGain) {
+      const target = 0.09 - nearness * 0.05;
+      const cur = this.ambientGain.gain.value;
+      this.ambientGain.gain.value = cur + (target - cur) * Math.min(1, dt * 2);
+    }
+    if (nearness > 0.35) {
+      const bpm = 60 + nearness * 90;
+      const interval = 60 / bpm;
+      this.heartTimer -= dt;
+      if (this.heartTimer <= 0) { this.triggerHeartbeat(); this.heartTimer = interval; }
+    } else {
+      this.heartTimer = 0;
+    }
+    this.clunkTimer -= dt;
+    if (this.clunkTimer <= 0) { this.clunk(); this.clunkTimer = 8 + Math.random() * 14; }
+    if (this.entityActive) {
+      this.whisperTimer -= dt;
+      if (this.whisperTimer <= 0) {
+        if (nearness > 0.2) this.whisper(0.12 + nearness * 0.2);
+        this.whisperTimer = 5 + Math.random() * 8;
+      }
+    }
+  }
+
+  scriptSighting(delay: number, wpIndex: number, msg?: string) {
+    this.scriptedSightings.push({ t: delay, wp: wpIndex, msg });
   }
 
   showToast(t: string) {
