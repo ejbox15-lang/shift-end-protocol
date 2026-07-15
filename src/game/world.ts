@@ -70,7 +70,7 @@ function addProp(
 }
 
 function addSign(scene: THREE.Scene, x: number, z: number, y: number, rotY: number, red = false) {
-  const g = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.9), red ? matSignRed : matSign);
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.4), red ? matSignRed : matSign);
   g.position.set(x, y, z);
   g.rotation.y = rotY;
   scene.add(g);
