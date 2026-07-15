@@ -389,6 +389,86 @@ export function buildWorld(scene: THREE.Scene): WorldBuild {
   const radio = addBox(scene, colliders, -9.5, 40, 0.5, 0.8, 0.7, 1.1, matMetal);
   interactables.push({ id: "radio", type: "radio", mesh: radio, pos: new THREE.Vector3(-9, 1.5, 40), radius: 2.5, prompt: "Listen to radio", data: {} });
 
+  // ============ ENVIRONMENTAL STORYTELLING ============
+  // Break room dressing
+  addProp(scene, colliders, 0, 37, 3, 1.2, 0.9, 0, matDesk);
+  addProp(scene, colliders, -2, 37, 0.5, 0.5, 0.9, 0, matWall2);
+  addProp(scene, colliders, 2, 37, 0.5, 0.5, 0.9, 0, matWall2);
+  addMonitor(scene, colliders, 0, 37, true);
+  addSign(scene, 4, 45.8, 3, Math.PI, false);
+  addSign(scene, -4, 45.8, 3, Math.PI, true);
+  addCamera(scene, 8, 45, -Math.PI / 4);
+  makeNote(scene, interactables, "note_break_1", -8, 37, "COFFEE ROTA",
+    "Week 47: DALE, MARIA, TOM, — — —.\nWeek 48: DALE, MARIA, — — —.\nWeek 49: DALE, — — —.\nWeek 50: — — —.");
+  makeNote(scene, interactables, "note_break_2", 4, 37, "TAPED TO THE FRIDGE",
+    "IF THE LIGHTS FLICKER IN THE FREEZER,\nDO NOT GO IN.\nDO NOT ANSWER THE INTERCOM.\nJUST WAIT UNTIL 6 AM.");
+
+  // Main floor
+  addSign(scene, -12, 3.9, 3.5, 0, false);
+  addSign(scene, 12, 3.9, 3.5, Math.PI, false);
+  addSign(scene, -12, 15.9, 3.5, 0, true);
+  addSign(scene, 12, 15.9, 3.5, Math.PI, false);
+  addCamera(scene, -24, 0, Math.PI / 2);
+  addCamera(scene, 24, 20, -Math.PI / 2);
+  addCamera(scene, 0, 26, Math.PI);
+  addPipeRun(scene, -24, 24, -10, WALL_H - 0.5);
+  addPipeRun(scene, -24, 24, 24, WALL_H - 0.5);
+  addProp(scene, colliders, -18, 8, 1.2, 1.2, 1.6, 0, matRust);
+  addProp(scene, colliders, -18, 10, 1.2, 1.2, 1.6, 0, matRust);
+  addProp(scene, colliders, 18, -10, 1.2, 1.2, 1.6, 0, matRust);
+  addMonitor(scene, colliders, -20, 22, true);
+  makeNote(scene, interactables, "note_aisle3", -12, -4, "AISLE 3 — HANDWRITTEN",
+    "he stands here at 3:17 am\ndont look at the camera\ndont say his badge number out loud");
+  makeNote(scene, interactables, "note_pallet", 6, 22, "PALLET SLIP",
+    "Signed for by: E. #013\nDate: 07/14/2023 — 3:17 AM.\nToday's date is 07/14, three years later.");
+
+  // Loading dock
+  addProp(scene, colliders, 32, 8, 2.2, 3, 1.8, 0, matRust);
+  addProp(scene, colliders, 32, 6.2, 2.2, 0.4, 0.6, 1.8, matMetal);
+  addSign(scene, 46, 6, 3, -Math.PI / 2, true);
+  addSign(scene, 46, 14, 3, -Math.PI / 2, false);
+  addCamera(scene, 44, 20, -3 * Math.PI / 4);
+  addPipeRun(scene, 27, 45, 0, WALL_H - 0.5);
+  addMonitor(scene, colliders, 28, 22, true);
+  makeNote(scene, interactables, "note_dock_2", 36, -2, "DRIVER LOGBOOK",
+    "07/14/2023 — Trailer 7 backed in. Driver walked to the break room. Never came back out.\nTrailer never left the dock.");
+
+  // Security office
+  for (let i = 0; i < 3; i++) addMonitor(scene, null, 18 + i * 1.2, -30.5, i !== 1);
+  addProp(scene, colliders, 24, -20, 0.4, 2, 2, 0, matMetal);
+  addProp(scene, colliders, 8, -20, 0.4, 2, 2, 0, matMetal);
+  addSign(scene, 6.3, -22, 3, Math.PI / 2, true);
+  addCamera(scene, 24, -16, -3 * Math.PI / 4);
+  makeNote(scene, interactables, "note_sec_1", 12, -20, "SECURITY LOG — 07/14/2023",
+    "03:14 — Cam 4 static.\n03:16 — Cam 4 shows figure in aisle 3.\n03:17 — All cameras cut.\n03:18 — Cam 4 back. Nobody there. Blood on the floor.\n03:19 — Report filed. Report deleted.");
+  makeNote(scene, interactables, "note_sec_2", 20, -22, "STICKY NOTE",
+    "Do NOT give badge #013 to any new hire. If the printer prints one anyway, BURN IT.");
+
+  // Maintenance
+  addProp(scene, colliders, -10, -30, 1.5, 0.5, 1.2, 0, matDesk);
+  addProp(scene, colliders, -14, -30, 0.6, 0.6, 1.5, 0, matRust);
+  addProp(scene, colliders, -18, -16, 1, 1, 2, 0, matRust);
+  addSign(scene, -25.7, -28, 3, Math.PI / 2, true);
+  addSign(scene, -6.3, -22, 3, -Math.PI / 2, true);
+  addCamera(scene, -24, -16, -Math.PI / 4);
+  addPipeRun(scene, -25, -7, -22, WALL_H - 0.5);
+  addMonitor(scene, colliders, -22, -22, true);
+  makeNote(scene, interactables, "note_maint_2", -18, -30, "TAPED TO THE GENERATOR",
+    "If you hear breathing on the intercom,\nkill the lights.\nHe can't find you without them.\n— M.");
+
+  // Freezer + cold storage
+  addSign(scene, -26.3, 4, 3, -Math.PI / 2, true);
+  addSign(scene, -26.3, 12, 3, -Math.PI / 2, false);
+  addCamera(scene, -42, 4, Math.PI / 4);
+  addCamera(scene, -30, 38, -Math.PI / 4);
+  addPipeRun(scene, -43, -27, 2, WALL_H - 0.5);
+  addMonitor(scene, colliders, -42, 6, true);
+  addProp(scene, colliders, -30, 6, 1.2, 1.2, 1.6, 0, matRust);
+  makeNote(scene, interactables, "note_freezer_2", -40, 18, "FROZEN CLIPBOARD",
+    "TEMP LOG — every entry after 07/14/2023 is written in the same handwriting.\nEven the ones from last week.\nEven the ones from tonight.");
+  makeNote(scene, interactables, "note_cold_2", -40, 30, "SCRAWLED — LARGER",
+    "I STILL PUNCH IN\nI STILL PUNCH IN\nI STILL PUNCH IN\nI STILL PUNCH IN");
+
   const entityWaypoints = [
     new THREE.Vector3(0, 0, 0),
     new THREE.Vector3(-18, 0, -6),
