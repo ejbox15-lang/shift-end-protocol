@@ -121,15 +121,29 @@ function GamePage() {
 function PlayHud({ hud }: { hud: HudState }) {
   return (
     <>
-      {/* Objective top-left */}
-      <div className="absolute left-4 top-4 z-30 max-w-xs">
-        <div className="font-terminal text-hazard text-sm tracking-widest uppercase opacity-80">
-          Chapter {hud.chapter}
-        </div>
-        <div className="font-typewriter text-foreground text-base leading-snug drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]">
-          {hud.objective}
-        </div>
-      </div>
+{/* Objective top-left */}
+<div className="absolute left-4 top-4 z-30 max-w-sm">
+  <div className="rounded-md border border-border bg-black/80 px-4 py-3">
+    <div className="font-terminal text-hazard text-xs tracking-[0.3em] uppercase">
+      Chapter {hud.chapter}
+    </div>
+
+    <div className="mt-2 font-terminal text-foreground/60 text-xs tracking-[0.25em] uppercase">
+      Current Objective
+    </div>
+
+    <div className="mt-1 font-typewriter text-white text-lg leading-relaxed">
+      {hud.objective}
+    </div>
+
+    <div className="mt-3 h-1 w-full rounded bg-foreground/10 overflow-hidden">
+      <div
+        className="h-full bg-hazard transition-all duration-500"
+        style={{ width: `${(hud.chapter / 5) * 100}%` }}
+      />
+    </div>
+  </div>
+</div>
 
       {/* Toast center-top */}
       {hud.toast && (
