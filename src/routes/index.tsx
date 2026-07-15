@@ -245,20 +245,30 @@ function StatBar({ label, value, className }: { label: string; value: number; cl
 }
 
 function MessageModal({ title, body, onClose }: { title: string; body: string; onClose: () => void }) {
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [onClose]);
   return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/85 p-6">
-      <div className="crt-scanlines relative max-w-lg w-full border-2 border-crt/40 bg-[oklch(0.14_0.02_150)] p-6 shadow-2xl">
-        <div className="font-terminal text-crt text-2xl tracking-widest mb-4 uppercase border-b border-crt/30 pb-2">
+    <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/95 p-6">
+      <div className="relative max-w-2xl w-full border-2 border-crt/60 bg-black p-8 shadow-2xl">
+        <div className="font-terminal text-crt text-3xl tracking-widest mb-5 uppercase border-b border-crt/40 pb-3">
           {title}
         </div>
-        <div className="font-typewriter text-foreground/90 whitespace-pre-line leading-relaxed text-sm">
+        <div className="font-typewriter text-foreground whitespace-pre-line leading-loose text-lg">
           {body}
         </div>
         <button
           onClick={onClose}
-          className="mt-6 font-terminal text-lg text-hazard tracking-widest hover:text-foreground transition-colors"
+          className="mt-8 font-terminal text-xl text-hazard tracking-widest hover:text-foreground transition-colors"
         >
-          [ CLOSE — E ]
+          [ CLOSE — press E or ESC ]
         </button>
       </div>
     </div>
