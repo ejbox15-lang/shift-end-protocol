@@ -51,8 +51,62 @@ const matMetal = new THREE.MeshLambertMaterial({ color: 0x4a5157 });
 const matLocker = new THREE.MeshLambertMaterial({ color: 0x395a4a });
 const matFreezer = new THREE.MeshLambertMaterial({ color: 0x6a7a85 });
 const matDesk = new THREE.MeshLambertMaterial({ color: 0x3a2f28 });
+const matSign = new THREE.MeshLambertMaterial({ color: 0xc9a227 });
+const matSignRed = new THREE.MeshLambertMaterial({ color: 0x992222 });
+const matMonitor = new THREE.MeshLambertMaterial({ color: 0x111111 });
+const matMonitorBroken = new THREE.MeshLambertMaterial({ color: 0x220808, emissive: 0x330000 });
+const matPipe = new THREE.MeshLambertMaterial({ color: 0x1f2226 });
+const matRust = new THREE.MeshLambertMaterial({ color: 0x5a2a1a });
 
 const WALL_H = 5;
+
+function addProp(
+  scene: THREE.Scene,
+  colliders: AABB[] | null,
+  x: number, z: number, w: number, d: number, h: number, y: number,
+  mat: THREE.Material,
+) {
+  return addBox(scene, colliders, x, z, w, d, h, y, mat);
+}
+
+function addSign(scene: THREE.Scene, x: number, z: number, y: number, rotY: number, red = false) {
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.9), red ? matSignRed : matSign);
+  g.position.set(x, y, z);
+  g.rotation.y = rotY;
+  scene.add(g);
+  // dark border strip
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.15), new THREE.MeshLambertMaterial({ color: 0x0a0a0a }));
+  b.position.set(x, y - 0.55, z);
+  b.rotation.y = rotY;
+  scene.add(b);
+}
+
+function addCamera(scene: THREE.Scene, x: number, z: number, rotY: number) {
+  // ceiling mount
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.4, 6), matMetal);
+  base.position.set(x, WALL_H - 0.4, z);
+  scene.add(base);
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.35, 0.7), matMetal);
+  body.position.set(x, WALL_H - 0.7, z);
+  body.rotation.y = rotY;
+  scene.add(body);
+  const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.15, 6), new THREE.MeshBasicMaterial({ color: 0xff2222 }));
+  lens.rotation.z = Math.PI / 2;
+  lens.position.set(x + Math.sin(rotY) * 0.4, WALL_H - 0.7, z + Math.cos(rotY) * 0.4);
+  scene.add(lens);
+}
+
+function addMonitor(scene: THREE.Scene, colliders: AABB[] | null, x: number, z: number, broken = false) {
+  addBox(scene, colliders, x, z, 1, 0.4, 0.8, 1.2, broken ? matMonitorBroken : matMonitor);
+}
+
+function addPipeRun(scene: THREE.Scene, x0: number, x1: number, z: number, y: number) {
+  const len = Math.abs(x1 - x0);
+  const g = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, len, 6), matPipe);
+  g.rotation.z = Math.PI / 2;
+  g.position.set((x0 + x1) / 2, y, z);
+  scene.add(g);
+}
 
 function addBox(
   scene: THREE.Scene,
