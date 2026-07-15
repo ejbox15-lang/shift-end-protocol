@@ -192,7 +192,7 @@ function PlayHud({ hud }: { hud: HudState }) {
 
       {/* Inventory */}
       {hud.showInv && (
-        <div className="absolute right-4 top-4 z-30 w-56 border border-border bg-black/85 p-3 font-terminal">
+        <div className="absolute right-4 top-24 z-30 w-52
           <div className="text-hazard text-sm tracking-widest mb-2 uppercase">Inventory (4)</div>
           <div className="grid grid-cols-2 gap-2">
             {Array.from({ length: 4 }).map((_, i) => {
