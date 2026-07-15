@@ -619,7 +619,7 @@ this.pitch += e.movementY * s;
 
   interact() {
     if (this.hiding) { this.exitHide(); return; }
-    if (this.reading) return;
+    if (this.reading) { this.closeMessage(); return; }
     const it = this.highlight;
     if (!it) return;
     if (it.locked) { this.showToast("Locked. You need to do something else first."); this.beep(120, 0.1, 0.1); return; }
