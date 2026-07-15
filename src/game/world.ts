@@ -314,6 +314,14 @@ export function buildWorld(scene: THREE.Scene): WorldBuild {
     }
   }
   // pallets to scan (5)
+// Extra warehouse clutter
+addBox(scene, colliders, -4, -6, 2, 2, 2, 0, matBox);
+addBox(scene, colliders, 4, 8, 2, 2, 2, 0, matBox);
+addBox(scene, colliders, -16, 18, 2, 2, 2, 0, matBox);
+addBox(scene, colliders, 16, -2, 2, 2, 2, 0, matBox);
+
+addBox(scene, colliders, 0, 10, 1.2, 1.2, 3, 0, matMetal);
+addBox(scene, colliders, -8, 0, 1.2, 1.2, 3, 0, matMetal);
   const palletPos: [number, number][] = [
     [-6, 2], [6, 2], [-6, 14], [6, 14], [0, 22],
   ];
