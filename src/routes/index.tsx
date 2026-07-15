@@ -220,7 +220,7 @@ function PlayHud({ hud }: { hud: HudState }) {
 
       {/* Controls guide — top right */}
       {hud.showGuide && !hud.showInv && (
-        <div className="absolute right-4 top-4 z-30 w-52 border border-border/60 bg-black/70 p-3 font-terminal text-sm backdrop-blur-sm">
+        <div className="absolute right-4 top-28 z-30 w-52 border border-border/60 bg-black/70 p-3 font-terminal text-sm backdrop-blur-sm">
           <div className="text-hazard tracking-widest uppercase mb-2 flex justify-between">
             <span>Controls</span>
             <span className="text-foreground/40 text-xs">[H] hide</span>
