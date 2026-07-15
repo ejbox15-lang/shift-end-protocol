@@ -75,7 +75,7 @@ function addSign(scene: THREE.Scene, x: number, z: number, y: number, rotY: numb
   g.rotation.y = rotY;
   scene.add(g);
   // dark border strip
-  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.15), new THREE.MeshLambertMaterial({ color: 0x0a0a0a }));
+const b = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 0.18), new THREE.MeshLambertMaterial({ color: 0x0a0a0a }));
   b.position.set(x, y - 0.55, z);
   b.rotation.y = rotY;
   scene.add(b);
